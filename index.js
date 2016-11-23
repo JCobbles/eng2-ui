@@ -5,3 +5,7 @@ var app = express();
 app.get('/', function (req, res) {
   res.send('Challenge 2');
 });
+
+app.listen(3000, function () {
+  console.log('Listening on localhost:3000');
+});
