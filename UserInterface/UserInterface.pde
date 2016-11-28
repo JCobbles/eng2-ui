@@ -1,6 +1,4 @@
 /**
- * This acts as the middleman between an Engduino and a web app.
- * It sends updates to the web app and displays a graph showing the light level.
  */
 import processing.serial.*;
 
@@ -30,12 +28,11 @@ void readSerial() {
     message = serial.readStringUntil('\n');
     if (message != null) {
       String[] data = message.split(",");
-      sendDataToWebsite(data);
+
       updateLocalGraph(Integer.parseInt(data[0]));
     }
   }
 }
-
 
 /**
  * Adds a new 'bar' to the barchart, clearing the screen if no more space
