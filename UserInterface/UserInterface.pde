@@ -2,7 +2,7 @@
  */
 import processing.serial.*;
 
-final int ENGDUINO_PORT_INDEX = 0; // the Engduino is on the first port
+final int ENGDUINO_PORT_INDEX = 3; // the Engduino is on the first port
 
 Serial serial;
 String message; 
