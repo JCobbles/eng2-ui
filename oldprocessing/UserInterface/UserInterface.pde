@@ -34,6 +34,9 @@ void readSerial() {
   }
 }
 
+void sendSerial() {
+  
+}
 /**
  * Adds a new 'bar' to the barchart, clearing the screen if no more space
  */

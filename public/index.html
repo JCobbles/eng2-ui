@@ -1,0 +1,133 @@
+<html>
+	<head>
+		<title>Team 8</title>
+
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/chartist.min.js" ></script>
+		<script src="/chartist-plugin-axistitle.min.js" ></script>
+		<!-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> -->
+		<script src="/jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" href="/chartist.min.css">
+
+		<script>
+			var temperatureChart;
+			var temperatureChartData = {
+				labels: [],
+				series: [[]]
+			};
+			var lightChart;
+			var lightChartData = {
+				labels: [],
+				series: [[]]
+			};
+
+			$(function() {
+				connectToWebSocket();
+				temperatureChart = new Chartist.Line('#chart1', temperatureChartData, createChartOptions("Y Axis"));
+				lightChart = new Chartist.Line('#chart2', lightChartData, createChartOptions("Y Axis"));
+			});
+
+			function connectToWebSocket() {
+				var socket = io.connect();
+				socket.on('update', function(msg) {
+					updateCharts(msg.data);
+				});
+			}
+
+			/**
+			 * Updates the datasets behind charts, causing a complete re-render of the SVG
+			 */
+			function updateCharts(data) {
+				// var dataset = data.split(",");
+
+				// temperatureChartData.labels.push(dataset[0]);
+				// temperatureChartData.series[0].push(dataset[2])
+				// temperatureChart.update(temperatureChartData);
+
+				// lightChartData.labels.push(dataset[0]);
+				// lightChartData.series[0].push(dataset[1]);
+				// lightChart.update(lightChartData);
+
+				lightChartData.labels.push(data);
+				lightChartData.series[0].push(3);
+				lightChart.update(lightChartData);
+			}
+
+			function createChartOptions(yAxisTitle) {
+				return {
+					plugins: [
+						Chartist.plugins.ctAxisTitle({
+							axisX: {
+								axisTitle: 'X axis',
+								axisClass: 'ct-axis-title',
+								offset: {
+									x: 0,
+									y: 40
+								},
+								textAnchor: 'middle'
+							},
+							axisY: {
+								axisTitle: yAxisTitle,
+								axisClass: 'ct-axis-title',
+								offset: {
+									x: 0,
+									y: 0
+								},
+								textAnchor: 'middle',
+								flipTitle: true
+							}
+						})
+					]
+				};
+			}
+		</script>
+
+		<style>
+			body {
+				margin: 0;
+			}
+			.ct-chart svg {
+				overflow: visible;
+				padding-left: 15px;
+				width: calc(100% - 15px) !important;
+			}
+			h1, h2, h3, h4, h5, h6, p, li {
+				font-family: 'Dosis', sans-serif;
+			}
+			.header {
+				text-align: center;
+			    background: #F0EEE5;
+			    overflow: hidden;
+				border-bottom: 1px solid #E4DDC4;
+			}
+			a {
+				text-decoration: none;
+				color: brown;
+			}
+			.container {
+				max-width: 600px;
+				margin: 0 auto 80px auto;
+			}
+			.footer {
+				height: 100px;
+				background: #F0EEE5;
+				border-top: 1px solid #E4DDC4;
+				padding-left: 30px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="header">
+			<h1>Team 8!</h1>
+			<div class="chart">
+				<div class="ct-chart ct-golden-section" style="margin-bottom: 40px;" id="chart1"></div>
+			</div>
+			<div class="chart">
+				<div class="ct-chart ct-golden-section" id="chart2"></div>
+			</div>
+		</div>
+		<div class="footer">
+		</div>
+	</body>
+</html>
