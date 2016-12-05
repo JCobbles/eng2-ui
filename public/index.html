@@ -10,21 +10,27 @@
 		<link rel="stylesheet" href="/chartist.min.css">
 
 		<script>
+			var phChart;
+			var phChartData = {
+				labels: [],
+				series: [[]]
+			};
 			var temperatureChart;
 			var temperatureChartData = {
 				labels: [],
 				series: [[]]
 			};
-			var lightChart;
-			var lightChartData = {
+			var stirringSpeedChart;
+			var stirringSpeedChartData = {
 				labels: [],
 				series: [[]]
 			};
 
 			$(function() {
 				connectToWebSocket();
-				temperatureChart = new Chartist.Line('#chart1', temperatureChartData, createChartOptions("Y Axis"));
-				lightChart = new Chartist.Line('#chart2', lightChartData, createChartOptions("Y Axis"));
+				phChart = new Chartist.Line('#chart1', phChartData, createChartOptions("Y Axis"));
+				temperatureChart = new Chartist.Line('#chart2', temperatureChartData, createChartOptions("Y Axis"));
+				stirringSpeedChart = new Chartist.Line('#chart2', stirringSpeedChartData, createChartOptions("Y Axis"));
 			});
 
 			function connectToWebSocket() {
@@ -38,19 +44,16 @@
 			 * Updates the datasets behind charts, causing a complete re-render of the SVG
 			 */
 			function updateCharts(data) {
-				// var dataset = data.split(",");
-
-				// temperatureChartData.labels.push(dataset[0]);
-				// temperatureChartData.series[0].push(dataset[2])
-				// temperatureChart.update(temperatureChartData);
-
-				// lightChartData.labels.push(dataset[0]);
-				// lightChartData.series[0].push(dataset[1]);
-				// lightChart.update(lightChartData);
-
-				lightChartData.labels.push(data);
-				lightChartData.series[0].push(3);
-				lightChart.update(lightChartData);
+				var date = new Date();
+				var dateString = `${date.getHours()}:${date.getMinutes()}`;
+				var dataset = data.split(" ");
+				if (temperatureChartData.labels.length > 10) {
+					temperatureChartData.labels.splice(0, 1);
+					temperatureChartData.series[0].splice(0, 1);
+				}
+				temperatureChartData.labels.push(dateString);
+				temperatureChartData.series[0].push(3);
+				temperatureChart.update(temperatureChartData);
 			}
 
 			function createChartOptions(yAxisTitle) {
@@ -114,18 +117,39 @@
 				border-top: 1px solid #E4DDC4;
 				padding-left: 30px;
 			}
+			ul {
+
+			}
+			li {
+				display: block;
+			    float: left;
+			    height: auto;
+			    list-style: none;
+			    width: 33.33333333%;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="header">
 			<h1>Team 8!</h1>
-			<div class="chart">
-				<div class="ct-chart ct-golden-section" style="margin-bottom: 40px;" id="chart1"></div>
-			</div>
-			<div class="chart">
-				<div class="ct-chart ct-golden-section" id="chart2"></div>
-			</div>
+			<ul>
+				<li>
+					<div class="chart">
+						<div class="ct-chart ct-golden-section" style="margin-bottom: 40px;" id="chart1"></div>
+					</div>
+				</li>
+				<li>
+					<div class="chart">
+						<div class="ct-chart ct-golden-section" id="chart2"></div>
+					</div>
+				</li>
+				<li>
+					<div class="chart">
+						<div class="ct-chart ct-golden-section" id="chart3"></div>
+					</div>
+				</li>
+			</ul>
 		</div>
 		<div class="footer">
 		</div>

@@ -12,6 +12,16 @@ app.get('/', function(req, res) {
     res.sendfile('index.html');
 });
 
+app.get('/setph/:ph', function(req, res) {
+	port.write('1 ' + req.params.ph);
+});
+app.get('/settemperature/:temp', function(req, res) {
+	port.write('2 ' + req.params.temp);
+});
+app.get('/setspeed/:speed', function(req, res) { // action="setspeed?speed=22"
+	port.write('3 ' + req.params.speed);
+});
+
 var port = new SerialPort('/dev/ttyACM0', {
 	parser: SerialPort.parsers.readline('\n')
 });
@@ -22,3 +32,8 @@ port.on('data', function (data) {
 	// This is how to send messages back
 	// port.write('Hi!\n');
 });
+/*
+1 - ph
+2 - temp
+3 - motor speed
+*/
