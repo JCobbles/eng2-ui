@@ -28,9 +28,9 @@
 
 			$(function() {
 				connectToWebSocket();
-				phChart = new Chartist.Line('#chart1', phChartData, createChartOptions("Y Axis"));
-				temperatureChart = new Chartist.Line('#chart2', temperatureChartData, createChartOptions("Y Axis"));
-				stirringSpeedChart = new Chartist.Line('#chart2', stirringSpeedChartData, createChartOptions("Y Axis"));
+				phChart = new Chartist.Line('#chart1', phChartData, createChartOptions("pH"));
+				temperatureChart = new Chartist.Line('#chart2', temperatureChartData, createChartOptions("Temperature (°C)"));
+				stirringSpeedChart = new Chartist.Line('#chart3', stirringSpeedChartData, createChartOptions("Stirring speed"));
 			});
 
 			function connectToWebSocket() {
@@ -45,7 +45,7 @@
 			 */
 			function updateCharts(data) {
 				var date = new Date();
-				var dateString = `${date.getHours()}:${date.getMinutes()}`;
+				var dateString = date.getSeconds();
 				var dataset = data.split(" ");
 				if (temperatureChartData.labels.length > 10) {
 					temperatureChartData.labels.splice(0, 1);
@@ -61,7 +61,7 @@
 					plugins: [
 						Chartist.plugins.ctAxisTitle({
 							axisX: {
-								axisTitle: 'X axis',
+								axisTitle: 'Time',
 								axisClass: 'ct-axis-title',
 								offset: {
 									x: 0,
@@ -74,7 +74,7 @@
 								axisClass: 'ct-axis-title',
 								offset: {
 									x: 0,
-									y: 0
+									y: 5
 								},
 								textAnchor: 'middle',
 								flipTitle: true
