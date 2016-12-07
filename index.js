@@ -22,7 +22,7 @@ app.get('/setspeed/:speed', function(req, res) { // action="setspeed?speed=22"
 	port.write('3 ' + req.params.speed);
 });
 
-var port = new SerialPort('/dev/ttyACM0', {
+var port = new SerialPort('COM12', {
 	parser: SerialPort.parsers.readline('\n')
 });
 
