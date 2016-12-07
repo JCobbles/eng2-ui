@@ -31,6 +31,27 @@
 				phChart = new Chartist.Line('#chart1', phChartData, createChartOptions("pH"));
 				temperatureChart = new Chartist.Line('#chart2', temperatureChartData, createChartOptions("Temperature (°C)"));
 				stirringSpeedChart = new Chartist.Line('#chart3', stirringSpeedChartData, createChartOptions("Stirring speed"));
+
+				$("#phForm").on('submit', function(event) {
+					event.preventDefault();
+					$.get("setph/" + $("#phForm [name='setpoint']")[0].value, function(data) {
+						console.log(data);
+
+					});
+				});
+				$("#speedForm").submit(function(event) {
+					event.preventDefault();
+					$.get("setspeed/" + $("#speedForm [name='setpoint']")[0].value, function(data) {
+						console.log(data);
+						console.log()
+					});
+				});
+				$("#temperatureForm").submit(function(event) {
+					event.preventDefault();
+					$.get("settemperature=" + $("#temperatureForm [name='setpoint']")[0].value, function(data) {
+						console.log(data);
+					});
+				});
 			});
 
 			function connectToWebSocket() {
@@ -138,18 +159,18 @@
 					<div class="chart">
 						<div class="ct-chart ct-golden-section" style="margin-bottom: 40px;" id="chart1"></div>
 					</div>
-					<form action="setph">
-					  Desired PH: <input type="number" name="ph" value="Mickey">
-					  <input type="submit" value="Submit">
+					<form id="phForm" action="setph">
+						Desired PH: <input type="number" name="setpoint" value="">
+						<input type="submit" value="Submit">
 					</form>
 				</li>
 
 				<li>
 					<div class="chart">
 						<div class="ct-chart ct-golden-section" id="chart2"></div>
-					</div>
-					<form action="setph">
-					  Desired PH: <input type="number" name="ph" value="Mickey">
+					</div>
+					<form id="temperatureForm" action="settemperature">
+						Desired Temperature: <input type="number" name="setpoint" value="">
 					  <input type="submit" value="Submit">
 					</form>
 				</li>
@@ -158,8 +179,8 @@
 					<div class="chart">
 						<div class="ct-chart ct-golden-section" id="chart3"></div>
 					</div>
-					<form action="setph">
-					  Desired PH: <input type="number" name="ph" value="Mickey">
+					<form id="speedForm" action="setspeed">
+					  Desired Speed: <input type="number" name="setpoint" value="">
 					  <input type="submit" value="Submit">
 					</form>
 				</li>

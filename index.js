@@ -8,22 +8,33 @@ var io = require('socket.io').listen(server);
 
 app.use(express.static('public'));
 
-app.get('/', function(req, res) {
-    res.sendfile('index.html');
+var portInformation = { comName: '/dev/ttyACM0' };
+SerialPort.list(function(err, ports) {
+	if (ports && ports[0]) {
+		portInformation = ports[0];
+	}
+});
+var port = new SerialPort(portInformation.comName, {
+	parser: SerialPort.parsers.readline('\n')
+});
+
+app.get('/settemperature/:temp', function(req, res) {
+	port.write('1 ' + req.params.temp);
+	res.json({ success: true });
 });
 
 app.get('/setph/:ph', function(req, res) {
-	port.write('1 ' + req.params.ph);
-});
-app.get('/settemperature/:temp', function(req, res) {
-	port.write('2 ' + req.params.temp);
-});
-app.get('/setspeed/:speed', function(req, res) { // action="setspeed?speed=22"
-	port.write('3 ' + req.params.speed);
+	port.write('2 ' + req.params.ph);
+	res.json({ success: true });
 });
 
-var port = new SerialPort('COM12', {
-	parser: SerialPort.parsers.readline('\n')
+app.get('/setspeed/:speed', function(req, res) {
+	port.write('3 ' + req.params.speed);
+	res.json({ success: true });
+});
+
+app.get('/', function(req, res) {
+    res.sendfile('index.html');
 });
 
 port.on('data', function (data) {
