@@ -5,7 +5,7 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/chartist.min.js" ></script>
 		<script src="/chartist-plugin-axistitle.min.js" ></script>
-		<!-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> -->
+		<link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
 		<script src="/jquery-1.11.3.min.js"></script>
 		<link rel="stylesheet" href="/chartist.min.css">
 
@@ -27,6 +27,7 @@
 			};
 
 			$(function() {
+				//ph between 3 and 7
 				connectToWebSocket();
 				phChart = new Chartist.Line('#chart1', phChartData, createChartOptions("pH"));
 				temperatureChart = new Chartist.Line('#chart2', temperatureChartData, createChartOptions("Temperature (°C)"));
@@ -68,13 +69,43 @@
 				var date = new Date();
 				var dateString = date.getSeconds();
 				var dataset = data.split(" ");
-				if (temperatureChartData.labels.length > 10) {
-					temperatureChartData.labels.splice(0, 1);
-					temperatureChartData.series[0].splice(0, 1);
+
+				var chart;
+				var chartData;
+				var logId;
+				var units = "";
+				switch (dataset[0]) {
+					case "1":
+						chartData = temperatureChartData;
+						chart = temperatureChart;
+						logId = "#temperatureLogs";
+						units = "°C"
+						break;
+					case "2":
+						chartData = phChartData;
+						chart = phChart;
+						logId = "#phLogs";
+						units = " pH";
+						break;
+					case "3":
+						chartData = stirringSpeedChartData;
+						chart = stirringSpeedChart;
+						logId = "#speedLogs";
+						units = "rpm";
+						break;
 				}
-				temperatureChartData.labels.push(dateString);
-				temperatureChartData.series[0].push(3);
-				temperatureChart.update(temperatureChartData);
+				if (chartData.labels.length > 10) {
+					chartData.labels.splice(0, 1);
+					chartData.series[0].splice(0, 1);
+				}
+				chartData.labels.push(dateString);
+				chartData.series[0].push(dataset[1]);
+				chart.update(chartData);
+				var seconds = date.getSeconds();
+				if (seconds < 10) {
+					seconds += "0";
+				}
+				$(logId).prepend(`<li>${date.getHours()}:${date.getMinutes()}:${seconds} - ${dataset[1]}${units}`);
 			}
 
 			function createChartOptions(yAxisTitle) {
@@ -116,13 +147,12 @@
 				width: calc(100% - 15px) !important;
 			}
 			h1, h2, h3, h4, h5, h6, p, li {
-				font-family: 'Dosis', sans-serif;
+				font-family: 'Josefin Slab', sans-serif;
 			}
 			.header {
 				text-align: center;
 			    background: #F0EEE5;
 			    overflow: hidden;
-				border-bottom: 1px solid #E4DDC4;
 			}
 			a {
 				text-decoration: none;
@@ -138,51 +168,78 @@
 				border-top: 1px solid #E4DDC4;
 				padding-left: 30px;
 			}
-			ul {
-
+			#temperatureLogs, #phLogs, #speedLogs {
+				list-style-type: none;
+				height: 100px;
+			    max-height: 100px;
+			    overflow: auto;
+				border: 1px solid #E4DDC4;
+				padding-top: 10px;
 			}
-			li {
+			li.chartItem {
 				display: block;
 			    float: left;
 			    height: auto;
 			    list-style: none;
 			    width: 33.33333333%;
 			}
+			.form-title {
+				margin-top: 50px;
+			}
+			.warning {
+				width: 50px;
+				position: absolute;
+			    top: 0;
+			    right: 0;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="header">
-			<h1>Team 8!</h1>
-			<ul>
-				<li>
+			<h1>BIOREACTOR INTERFACE</h1>
+			<img class="warning" src="warning.jpg" />
+			<ul style="padding: 0">
+				<li class="chartItem">
 					<div class="chart">
-						<div class="ct-chart ct-golden-section" style="margin-bottom: 40px;" id="chart1"></div>
+						<div class="ct-chart ct-golden-section" id="chart1"></div>
 					</div>
 					<form id="phForm" action="setph">
-						Desired PH: <input type="number" name="setpoint" value="">
+						<p class="form-title">Desired pH: </p>
+						<input type="number" name="setpoint" value="">
 						<input type="submit" value="Submit">
 					</form>
+					<br>
+					<ul id="phLogs">
+					</ul>
 				</li>
 
-				<li>
+				<li class="chartItem">
 					<div class="chart">
 						<div class="ct-chart ct-golden-section" id="chart2"></div>
 					</div>
 					<form id="temperatureForm" action="settemperature">
-						Desired Temperature: <input type="number" name="setpoint" value="">
-					  <input type="submit" value="Submit">
+						<p class="form-title">Desired Temperature:</p>
+						<input type="number" name="setpoint" value="">
+						<input type="submit" value="Submit">
 					</form>
+					<br>
+					<ul id="temperatureLogs">
+					</ul>
 				</li>
 
-				<li>
+				<li class="chartItem">
 					<div class="chart">
 						<div class="ct-chart ct-golden-section" id="chart3"></div>
 					</div>
 					<form id="speedForm" action="setspeed">
-					  Desired Speed: <input type="number" name="setpoint" value="">
-					  <input type="submit" value="Submit">
+						<p class="form-title">Desired Speed:</p>
+						<input type="number" name="setpoint" value="">
+						<input type="submit" value="Submit">
 					</form>
+					<br>
+					<ul id="speedLogs">
+					</ul>
 				</li>
 			</ul>
 		</div>

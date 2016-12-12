@@ -37,11 +37,16 @@ app.get('/', function(req, res) {
     res.sendfile('index.html');
 });
 
+// TEST:
+// setInterval(function() {
+//     io.sockets.emit('update', { data: `1 ${28 + Math.floor(Math.random() * 6) - 6}` });
+//     io.sockets.emit('update', { data: `2 ${7.3 + Math.floor(Math.random() * 3) - 2}` });
+//     io.sockets.emit('update', { data: `3 ${560 + Math.floor(Math.random() * 10) - 100}` });
+// }, 1000);
+
 port.on('data', function (data) {
 	io.sockets.emit('update', { data: data });
 	console.log('Data: ' + data);
-	// This is how to send messages back
-	// port.write('Hi!\n');
 });
 /*
 1 - ph
